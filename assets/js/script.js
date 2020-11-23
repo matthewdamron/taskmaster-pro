@@ -33,7 +33,7 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
+    // console.log(list, arr);
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -45,8 +45,55 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+// click on the <p> element on the saved tasked to replace <p> element to <textarea> element
+$(".list-group").on("click", "p", function() {
+  // captures element with this
+  var text = $(this)
+    .text() // assi
+    .trim(); // trim whitespace
 
+  // create <textarea> element
+  var textInput = $("<textarea>")
+    .addClass("form-control")
+    .val(text);
 
+  // replace <p> element with <textarea> element
+  $(this).replaceWith(textInput);
+
+  // sets the triger as its focus
+  textInput.trigger("focus");
+});
+
+// blur event will trigger as soon as the user interacts with anything other than the <textarea> element
+$(".list-group").on("blur", "textarea", function() {
+  // get the textarea's current value/text
+  var text = $(this)
+    .val()
+    .trim();
+
+  // get the parent ul's id attribute
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+
+  // get the task's position in the list of other li elements
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+  
+  // returns the text property of the object at the given index.
+  tasks[status][index].text = text;
+  saveTasks();
+
+  // recreate <p> element
+  var taskP = $("<p>")
+  .addClass("m-1")
+  .text(text);
+
+  // replace <textarea> with <p> element
+  $(this).replaceWith(taskP);
+});
 
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
@@ -93,5 +140,3 @@ $("#remove-tasks").on("click", function() {
 
 // load tasks for the first time
 loadTasks();
-
-
