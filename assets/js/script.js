@@ -95,6 +95,20 @@ $(".card .list-group").sortable({
   }
 });
 
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+  drop: function(event, ui) {
+    ui.draggable.remove();
+  },
+  // over: function(event, ui) {
+  //   console.log("over");
+  // },
+  // out: function(event, ui) {
+  //   console.log("out");
+  // }
+});
+
 // click on the <span> elemetn on the saved task to replace <span> to <input> element
 $(".list-group").on("click", "span", function() {
   // captures element with this
