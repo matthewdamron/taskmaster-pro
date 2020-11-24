@@ -45,7 +45,58 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
-// click on the <p> element on the saved tasked to replace <p> element to <textarea> element
+// click on the <span> elemetn on the saved task to replace <span> to <input> element
+$(".list-group").on("click", "span", function() {
+  // captures element with this
+  var date = $(this)
+    .text()
+    .trim();
+
+  // create <input> element
+  var dateInput = $("<input>")
+    .attr("type", "text")
+    .addClass("form-comtrol")
+    .val(date);
+
+  // replace <span> with <input> element
+  $(this).replaceWith(dateInput);
+
+  // sets the triger as its focus
+  dateInput.trigger("focus");
+})
+
+// blur event will tigger as soon as the user ineracres with anything other than the <input) element
+$(".list-group").on("blur", "input[type='text']", function() {
+  // get current text
+  var date = $(this)
+    .val()
+    .trim();
+
+  // get the parent ul's id attribute
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+
+  // get the task's position in the list of other li elements
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  // update task in array and re-save to localstorage
+  tasks[status][index].date = date;
+  saveTasks();
+
+  // recreate span element with bootstrap classes
+  var taskSpan = $("<span>")
+    .addClass("badge badge-primary badge-pill")
+    .text(date);
+
+  // replace input with span element
+  $(this).replaceWith(taskSpan);
+})
+
+// click on the <p> element on the saved task to replace <p> to <textarea> element
 $(".list-group").on("click", "p", function() {
   // captures element with this
   var text = $(this)
