@@ -13,6 +13,8 @@ var createTask = function(taskText, taskDate, taskList) {
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
 
+  // cheack due date
+  auditTask(taskLi);
 
   // append to ul list on the page
   $("#list-" + taskList).append(taskLi);
@@ -43,6 +45,11 @@ var loadTasks = function() {
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+var auditTask = function(taskEl) {
+  // to ensure element is getting to the function
+  console.log(taskEl);
 };
 
 $(".card .list-group").sortable({
@@ -124,13 +131,22 @@ $(".list-group").on("click", "span", function() {
 
   // replace <span> with <input> element
   $(this).replaceWith(dateInput);
+  
+  // enable jquery ui datepicker
+  dateInput.datepicker({
+    minDate: 1,
+    onClose: function() {
+      // when calendar is closed, force a "change" event on the 'dateInput
+      $(this).trigger("change");
+    }
+  });
 
   // sets the triger as its focus
   dateInput.trigger("focus");
 })
 
 // blur event will tigger as soon as the user ineracres with anything other than the <input) element
-$(".list-group").on("blur", "input[type='text']", function() {
+$(".list-group").on("change", "input[type='text']", function() {
   // get current text
   var date = $(this)
     .val()
@@ -208,6 +224,11 @@ $(".list-group").on("blur", "textarea", function() {
 
   // replace <textarea> with <p> element
   $(this).replaceWith(taskP);
+});
+
+// date picker for the modal
+$("#modalDueDate").datepicker({
+  minDate: 1
 });
 
 // modal was triggered
