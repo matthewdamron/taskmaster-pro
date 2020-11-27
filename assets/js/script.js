@@ -81,6 +81,31 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
 
+  activate: function(event) {
+    $(this)
+      .addClass("dropover");
+    $(".bottom-trash")
+      .addClass("bottom-trash-drag")
+  },
+  deactivate: function(event) {	
+    $(this)
+      .removeClass("dropover");
+    $(".bottom-trash")
+      .removeClass("bottom-trash-drag")
+  },
+  over: function(event) {
+    $(this)
+      .addClass("dropover-active");
+    $(".bottom-trash")
+      .addClass("bottom-trash-active")
+  },
+  out: function(event) {
+    $(this)
+      .removeClass("dropover-active");
+    $(".bottom-trash")
+      .removeClass("bottom-trash-active")
+  },
+
   update: function(event) {
     // array to store the task data in
     var tempArr = [];
@@ -285,3 +310,9 @@ $("#remove-tasks").on("click", function() {
 
 // load tasks for the first time
 loadTasks();
+
+setInterval(function () {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, (1000 * 60) * 30);
